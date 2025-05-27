@@ -17,12 +17,13 @@ jobs:
             dotnet-version: '8.0.x'
         
         - name: Restore dependencies
-          run: dotnet restore src
+          run: dotnet restore
+          working-directory: src
          
         - name: Build
-          run: dotnet build src --configuration Release --no-restore
+          run: dotnet build --configuration Release --no-restore
+          working-directory: src
           
         - name: Run GH Script
-          env:
-            GH_PAT: ${{ secrets.GH_PAT }}
-          run: dotnet run --project src
+          run: dotnet run
+          working-directory: src
