@@ -11,7 +11,7 @@ class GH
     public GH()
     {
         github = new GitHubClient(new ProductHeaderValue("octo-test-app"));
-        token = Environment.GetEnvironmentVariable("GH_PAT");
+        token = Environment.GetEnvironmentVariable("GH_TOKEN");
         tokenAuth = new Credentials(token);
         github.Credentials = tokenAuth;
     }
