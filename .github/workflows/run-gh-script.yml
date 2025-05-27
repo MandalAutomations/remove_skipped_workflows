@@ -18,12 +18,12 @@ jobs:
         
         - name: Restore dependencies
           run: dotnet restore
-          working-directory: src
+          working-directory: ./
          
         - name: Build
           run: dotnet build --configuration Release --no-restore
-          working-directory: src
+          working-directory: ./
           
         - name: Run GH Script
           run: dotnet run
-          working-directory: src
+          working-directory: ./
