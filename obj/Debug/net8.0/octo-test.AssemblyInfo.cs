@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("octo-test")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7e2b3906e1cb3d11539b38979216f90455b8974f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+26dc295e1b65d337b2282198374ba9dcf9eb1076")]
 [assembly: System.Reflection.AssemblyProductAttribute("octo-test")]
 [assembly: System.Reflection.AssemblyTitleAttribute("octo-test")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

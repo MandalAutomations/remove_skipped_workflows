@@ -9,6 +9,7 @@ C:\Users\EvanAllen\Desktop\octo-test\obj\Debug\net8.0\octo-test.GeneratedMSBuild
 C:\Users\EvanAllen\Desktop\octo-test\obj\Debug\net8.0\octo-test.AssemblyInfoInputs.cache
 C:\Users\EvanAllen\Desktop\octo-test\obj\Debug\net8.0\octo-test.AssemblyInfo.cs
 C:\Users\EvanAllen\Desktop\octo-test\obj\Debug\net8.0\octo-test.csproj.CoreCompileInputs.cache
+C:\Users\EvanAllen\Desktop\octo-test\obj\Debug\net8.0\octo-test.sourcelink.json
 C:\Users\EvanAllen\Desktop\octo-test\obj\Debug\net8.0\octo-test.csproj.CopyComplete
 C:\Users\EvanAllen\Desktop\octo-test\obj\Debug\net8.0\octo-test.dll
 C:\Users\EvanAllen\Desktop\octo-test\obj\Debug\net8.0\refint\octo-test.dll
