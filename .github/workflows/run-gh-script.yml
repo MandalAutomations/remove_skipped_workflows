@@ -25,7 +25,7 @@ jobs:
           working-directory: ./
           
         - name: Run GH Script
-          run: dotnet run
+          run: dotnet run create
           working-directory: ./
           env:
             GH_TOKEN: ${{ secrets.GH_TOKEN }}
