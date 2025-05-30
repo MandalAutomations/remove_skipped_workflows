@@ -1,7 +1,7 @@
 
 using System;
 using Octokit;
-
+using OctoTest.Mod;
 class GH
 {
     private readonly GitHubClient github;
@@ -15,13 +15,47 @@ class GH
         tokenAuth = new Credentials(token);
         github.Credentials = tokenAuth;
     }
-
-    public async Task<string[]> GetRepos(string org)
+    public async Task<RepoModel[]> GetRepos(string org)
     {
         var repos = await github.Repository.GetAllForOrg(org);
-        Console.WriteLine($"Repositories for organization {repos.Count()}:");
+        var mods = repos.Select(repo => new RepoModel
+        {
+            Id = repo.Id,
+            Name = repo.Name,
+            FullName = repo.FullName,
+            Description = repo.Description,
+            HtmlUrl = repo.HtmlUrl,
+            Private = repo.Private,
+            Language = repo.Language,
+            StargazersCount = repo.StargazersCount,
+            ForksCount = repo.ForksCount,
+            Visibility = repo.Visibility?.ToString() ?? "Unknown"
+        }).ToArray();
+        return mods;
+    }
 
-        var repoNames = repos.Select(r => r.Name).ToArray();
-        return repoNames;
+    public async Task<RepoModel?> GetRepo(string org, string repoName)
+    {
+        try
+        {
+            var repo = await github.Repository.Get(org, repoName);
+            return new RepoModel
+            {
+                Id = repo.Id,
+                Name = repo.Name,
+                FullName = repo.FullName,
+                Description = repo.Description,
+                HtmlUrl = repo.HtmlUrl,
+                Private = repo.Private,
+                Language = repo.Language,
+                StargazersCount = repo.StargazersCount,
+                ForksCount = repo.ForksCount,
+                Visibility = repo.Visibility?.ToString() ?? "Unknown"
+            };
+        }
+        catch (NotFoundException)
+        {
+            return null;
+        }
     }
 }
