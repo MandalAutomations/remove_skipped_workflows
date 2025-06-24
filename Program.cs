@@ -1,77 +1,56 @@
-﻿using Octokit;
+using Octokit;
+using System;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
 
 class Program
 {
     static async Task Main(string[] args)
     {
-        string? orgName = null;
-        string? repoName = null;
-        string? command = null;
+        GitHubClient github = new GitHubClient(new ProductHeaderValue("octo-test-app"));
+        string? token = Environment.GetEnvironmentVariable("GH_TOKEN");
+        Credentials? tokenAuth = new Credentials(token);
+        github.Credentials = tokenAuth;
 
-        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GH_TOKEN")))
+        string repoFullName = args.Length > 0 ? args[0] : throw new ArgumentException("Repository (org/repo) must be provided as the first argument.");
+        var repoParts = repoFullName.Split('/');
+        if (repoParts.Length != 2)
+            throw new ArgumentException("Repository must be in the format 'org/repo'.");
+
+        string owner = repoParts[0];
+        string repo = repoParts[1];
+
+        int total = 0;
+        int totalDeleted = 0;
+        int perPage = 100;
+        int page = 1;
+
+        while (true)
         {
-            Console.WriteLine("need token");
-            return;
+            var runs = await github.Actions.Workflows.Runs.List(owner, repo, new WorkflowRunsRequest() { });
+
+            var skippedRuns = runs.WorkflowRuns?.Where(r => r.Conclusion == "skipped").ToList();
+            if (skippedRuns == null || skippedRuns.Count == 0)
+                break;
+
+            total = skippedRuns.Count;
+            foreach (var run in skippedRuns)
+            {
+                await github.Connection.Delete(new Uri($"/repos/{owner}/{repo}/actions/runs/{run.Id}", UriKind.Relative), null, "application/vnd.github.v3+json");
+                totalDeleted++;
+                if (totalDeleted % 10 == 0)
+                {
+                    Console.WriteLine($"Total deleted so far: {totalDeleted}/{total}");
+                }
+            }
+
+            if (skippedRuns.Count < perPage)
+                break;
+
+            page++;
         }
 
-        if (args.Length != 0)
-        {
-            command = args[0].ToLowerInvariant();
-        }
-        else
-        {
-            Console.WriteLine("No command provided.");
-            return;
-        }
-
-        for (int i = 0; i < args.Length; i++)
-        {
-            if (args[i] == "--org" && i + 1 < args.Length)
-            {
-                orgName = args[i + 1];
-                i++;
-            }
-            else if (args[i] == "--repo" && i + 1 < args.Length)
-            {
-                repoName = args[i + 1];
-                i++;
-            }
-        }
-
-        var gh = new GH();
-
-        if (command == "orgrepos" && !string.IsNullOrEmpty(orgName))
-        {
-            var repos = await gh.GetRepos(orgName);
-            foreach (var repo in repos)
-            {
-                Console.WriteLine($"{repo.Name} - {repo.Visibility} - {repo.Language}");
-            }
-        }
-        else if (command == "repo" && !string.IsNullOrEmpty(repoName) && !string.IsNullOrEmpty(orgName))
-        {
-            var repo = await gh.GetRepo(orgName, repoName);
-            if (repo != null)
-            {
-                Console.WriteLine($"Repo: {repo.Name}");
-                Console.WriteLine($"Description: {repo.Description}");
-                Console.WriteLine($"URL: {repo.HtmlUrl}");
-                Console.WriteLine($"Visibility: {repo.Visibility}");
-                Console.WriteLine($"Language: {repo.Language}");
-                Console.WriteLine($"Stars: {repo.StargazersCount}");
-                Console.WriteLine($"Forks: {repo.ForksCount}");
-            }
-            else
-            {
-                Console.WriteLine("Repository not found.");
-            }
-        }
-        else
-        {
-            Console.WriteLine("Invalid command or missing parameters.");
-            Console.WriteLine("Usage:");
-            Console.WriteLine("  orgrepos --org <organization_name>");
-            Console.WriteLine("  repo --org <organization_name> --repo <repository_name>");
-        }
+        Console.WriteLine($"Total deleted: {totalDeleted}");
     }
 }
