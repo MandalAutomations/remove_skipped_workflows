@@ -12,8 +12,8 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
+      contents: write
       packages: write
-      contents: read
 
     steps:
       - name: Checkout code
@@ -31,15 +31,15 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Create .exe ${{ inputs.package_version }}
-        run: dotnet publish -p:PublishSingleFile=true --no-self-contained
+        run: dotnet publish --configuration Release --runtime win-x64 --self-contained false -p:PublishSingleFile=true
 
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ inputs.package_version }}
-          release_name: Release v${{ inputs.package_version }}
+          name: Release v${{ inputs.package_version }}
           files: |
-            bin/Release/net8.0/publish/*.exe
+            bin/Release/net8.0/win-x64/publish/*.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
