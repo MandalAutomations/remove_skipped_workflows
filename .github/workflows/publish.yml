@@ -31,7 +31,7 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Create .exe ${{ inputs.package_version }}
-        run: dotnet publish --configuration Release --runtime win-x64 --self-contained false -p:PublishSingleFile=true
+        run: dotnet publish --configuration Release --runtime win-x64 --self-contained true -p:PublishSingleFile=true
 
       - name: Create Release
         id: create_release
