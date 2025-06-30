@@ -38,7 +38,7 @@ jobs:
 
           ls -R
           mv ./bin/Release/net8.0/win-x64/publish/skip_remover.exe ./bin/Release/net8.0/win-x64/publish/skip_remover_win-x64.exe 
-          # mv ./bin/Release/net8.0/linux-x64/publish/skip_remover.exe ./bin/Release/net8.0/linux-x64/publish/skip_remover_linux-x64.exe 
+          mv ./bin/Release/net8.0/linux-x64/publish/skip_remover ./bin/Release/net8.0/linux-x64/publish/skip_remover_linux-x64.exe
 
       - name: Create Release
         id: create_release
