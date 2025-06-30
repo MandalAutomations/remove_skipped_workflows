@@ -1,3 +1,4 @@
+
 name: Publish .NET Package
 
 on:
@@ -30,14 +31,13 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
-      - name: Publish Executables
+      - name: Create .exe ${{ inputs.package_version }}
         run: |
-          dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o ./publish/win
-          dotnet publish -c Release -r linux-x64 --self-contained true -p:PublishSingleFile=true -o ./publish/linux
+          dotnet publish --configuration Release --runtime win-x64 --self-contained true -p:PublishSingleFile=true
+          dotnet publish --configuration Release --runtime linux-x64 --self-contained true -p:PublishSingleFile=true
 
-          # Rename files to avoid collisions
-          mv ./publish/win/*.exe ./publish/win/myapp-win.exe
-          mv ./publish/linux/*.exe ./publish/linux/myapp-linux.exe
+          mv ./bin/Release/net8.0/win-x64/publish/skip_remover.exe ./bin/Release/net8.0/win-x64/publish/skip_remover_win-x64.exe 
+          mv ./bin/Release/net8.0/linux-x64/publish/*.exe ./bin/Release/net8.0/linux-x64/publish/skip_remover_linux-x64.exe 
 
       - name: Create Release
         id: create_release
@@ -46,7 +46,7 @@ jobs:
           tag_name: v${{ inputs.package_version }}
           name: Release v${{ inputs.package_version }}
           files: |
-            publish/win/myapp-win.exe
-            publish/linux/myapp-linux.exe
+            bin/Release/net8.0/win-x64/publish/*.exe
+            bin/Release/net8.0/linux-x64/publish/*.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
